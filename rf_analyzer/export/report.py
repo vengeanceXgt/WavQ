@@ -24,6 +24,10 @@ def _json_safe(obj):
         return {k: _json_safe(v) for k, v in obj.items()}
     if isinstance(obj, (list, tuple)):
         return [_json_safe(v) for v in obj]
+    if hasattr(obj, "to_dict"):
+        return _json_safe(obj.to_dict())
+    if hasattr(obj, "__dict__"):
+        return _json_safe(obj.__dict__)
     return obj
 
 def export_report(stages, source_file, out_path):

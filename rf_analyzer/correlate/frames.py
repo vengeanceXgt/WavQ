@@ -18,15 +18,32 @@ def crc16_ccitt(data_bytes, poly=0x1021, init=0xFFFF):
             crc = ((crc << 1) ^ poly) & 0xFFFF if (crc & 0x8000) else (crc << 1) & 0xFFFF
     return crc
 
-def find_repeating_frame_length(bits, min_len=32, max_len=512):
-    x = bits.astype(np.float32) * 2 - 1
-    autocorr = np.correlate(x, x, mode="full")[len(x) - 1:]
-    candidates = []
-    for lag in range(min_len, min(max_len, len(autocorr) - 1)):
-        candidates.append((lag, autocorr[lag]))
-    if not candidates:
+def find_repeating_frame_length(bits, min_len=32, max_len=2048):
+    if len(bits) < max_len * 2:
         return None
-    best_lag, best_score = max(candidates, key=lambda c: c[1])
+        
+    x = bits.astype(np.float32) * 2 - 1
+    # Use FFT-based autocorrelation to avoid O(N^2) hang on long bitstreams
+    # Pad to next power of 2 for speed
+    n = len(x)
+    n_fft = 1 << (n * 2 - 1).bit_length()
+    X = np.fft.fft(x, n_fft)
+    autocorr = np.fft.ifft(X * np.conj(X)).real
+    
+    # We only care about lags up to max_len
+    autocorr = autocorr[:max_len+1] / n # Normalize
+    
+    best_lag = None
+    best_score = 0
+    
+    for lag in range(min_len, min(max_len, n // 2)):
+        score = autocorr[lag] * n / (n - lag)
+        if score > best_score:
+            best_score = score
+            best_lag = lag
+            
+    if best_score == 0:
+        return None
     baseline = np.mean(autocorr[min_len:max_len])
     confidence = float((best_score - baseline) / (autocorr[0] - baseline + 1e-9))
     return {"frame_length_bits": best_lag, "confidence": max(0.0, min(1.0, confidence))}

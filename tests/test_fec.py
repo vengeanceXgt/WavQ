@@ -1,6 +1,6 @@
 import numpy as np
 from rf_analyzer.fec.viterbi import encode_conv, viterbi_decode
-from rf_analyzer.fec.identify import identify_and_decode, try_convolutional_hypothesis
+from rf_analyzer.fec.identify import identify_and_decode
 from rf_analyzer.utils.synth import random_bits
 
 def _encode_to_llr(bits, noise_scale=0.7, seed=0):
@@ -23,7 +23,7 @@ def test_FEC02_identification_positive_case():
     llr = _encode_to_llr(bits, noise_scale=0.7)
     result = identify_and_decode(llr)
     assert result["fec_type"] == "conv_r1_2_k7"
-    assert result["confidence"] > 0.7
+    assert result["validation_evidence"]["evidence_score"] > 0.7
 
 def test_FEC03_identification_negative_case_no_fec():
     bits = random_bits(300, seed=7)

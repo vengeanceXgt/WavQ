@@ -261,7 +261,7 @@ class TestFullPipeline:
 
             X = load_samples(indices, as_complex=True)
             for i in range(len(X)):
-                stages = run_pipeline_on_iq(X[i], sample_rate=1.0, use_cnn_amc=True)
+                stages = run_pipeline_on_iq(X[i], sample_rate=1.0, manual_overrides={"sps": 8})
                 assert len(stages) >= 3, (
                     f"{mod_name} sample {i}: pipeline only produced {len(stages)} stages"
                 )
@@ -282,7 +282,7 @@ class TestFullPipeline:
         X = load_samples(indices, as_complex=True)
 
         for i in range(len(X)):
-            stages = run_pipeline_on_iq(X[i], sample_rate=1.0, use_cnn_amc=True)
+            stages = run_pipeline_on_iq(X[i], sample_rate=1.0, manual_overrides={"sps": 8})
             amc_stage = next((s for s in stages if s.name == "amc"), None)
             assert amc_stage is not None, f"Sample {i}: AMC stage not reached"
             assert amc_stage.ok, f"Sample {i}: AMC stage failed"
@@ -304,5 +304,5 @@ class TestFullPipeline:
         X = load_samples(indices, as_complex=True)
         for i in range(len(X)):
             # Should not raise an exception — graceful degradation
-            stages = run_pipeline_on_iq(X[i], sample_rate=1.0, use_cnn_amc=True)
+            stages = run_pipeline_on_iq(X[i], sample_rate=1.0, manual_overrides={"sps": 8})
             assert len(stages) >= 1, "Pipeline produced no stages at all"

@@ -22,7 +22,7 @@ def test_AMC01_correct_classification_high_snr(scheme):
         cfo_hz = 0.0 if scheme == "2fsk" else 1200.0
         iq, truth = generate_test_signal(scheme=scheme, cfo_hz=cfo_hz, snr_db=20, seed=seed)
         result = _classify(iq, truth, scheme)
-        if result["modulation"] == scheme:
+        if result["label"] == scheme:
             hits += 1
     assert hits >= 7, f"{scheme}: only {hits}/8 correct at 20dB SNR"
 
@@ -35,7 +35,7 @@ def test_AMC02_qpsk_accuracy_at_snr(snr_db):
     for seed in range(n):
         iq, truth = generate_test_signal(scheme="qpsk", cfo_hz=1200.0, snr_db=snr_db, seed=seed)
         result = _classify(iq, truth, "qpsk")
-        if result["modulation"] == "qpsk":
+        if result["label"] == "qpsk":
             hits += 1
     accuracy = hits / n
     print(f"QPSK accuracy at {snr_db}dB: {accuracy:.2f}")

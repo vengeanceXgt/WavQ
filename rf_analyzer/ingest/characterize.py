@@ -6,11 +6,12 @@ from scipy.signal import hilbert
 from .sigmf_io import load_sigmf, DTYPE_MAP
 
 class IngestResult:
-    def __init__(self, iq, sample_rate, source_format, notes):
+    def __init__(self, iq, sample_rate, source_format, notes, metadata=None):
         self.iq = iq                    # complex64 numpy array
         self.sample_rate = sample_rate  # float Hz, or None if unknown
         self.source_format = source_format
         self.notes = notes              # list[str] of warnings/decisions made
+        self.metadata = metadata        # dict of sigmf metadata if available
 
 def _guess_raw_iq_dtype(raw_bytes):
     """Heuristic: try cf32 first (float exponent histogram is distinctive),
@@ -41,7 +42,7 @@ def load_file(path, assumed_sample_rate=None):
         else:
             iq = hilbert(audio).astype(np.complex64)
             notes.append("Mono WAV: applied Hilbert transform to form analytic (I/Q) signal.")
-        return IngestResult(iq, float(sample_rate), "wav", notes)
+        return IngestResult(iq, float(sample_rate), "wav", notes, metadata=None)
 
     # Not a .wav: try SigMF-paired or raw .iq
     raw, dtype_str, sample_rate, meta = load_sigmf(path)
@@ -68,7 +69,7 @@ def load_file(path, assumed_sample_rate=None):
     else:
         raise ValueError(f"Unsupported datatype: {dtype_str}")
 
-    return IngestResult(iq, sample_rate, "iq", notes)
+    return IngestResult(iq, sample_rate, "iq", notes, metadata=meta)
 
 def normalize(iq):
     """DC removal + unity variance normalization (Stage 1/2 signal conditioning)."""
