@@ -64,11 +64,22 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 }
 
 /* ── Container Borders & Segregation ────────────────────── */
+/* Streamlit ≥1.25 wraps border=True containers in this element */
 [data-testid="stVerticalBlockBorderWrapper"] {
     background: #ffffff !important;
-    border: 1.5px solid #cbd5e1 !important;
+    border: 2px solid #334155 !important;
     border-radius: 14px !important;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.10) !important;
+    margin-bottom: 1.25rem !important;
+    overflow: hidden !important;
+}
+/* Fallback: target by Emotion class pattern (version-agnostic) */
+div.stVerticalBlockBorderWrapper,
+div[class*="stVerticalBlockBorderWrapper"] {
+    background: #ffffff !important;
+    border: 2px solid #334155 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.10) !important;
     margin-bottom: 1.25rem !important;
 }
 
@@ -697,8 +708,8 @@ with st.container():
         st.markdown(
             """
             <div style="display: flex; align-items: center; gap: 0.85rem; padding: 0.25rem 0;">
-                <div style="width: 36px; height: 36px; background: #0f172a; border: 1.5px solid #334155; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #38bdf8;">
-                    📡
+                <div style="width: 36px; height: 36px; background: #0f172a; border: 1.5px solid #334155; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: #38bdf8; letter-spacing: -0.02em;">
+                    RF
                 </div>
                 <div>
                     <div style="font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: #64748b;">PLATFORM ID</div>
@@ -770,7 +781,6 @@ with col_ingest:
         st.markdown(
             """
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
-                <span style="font-size: 1rem;">📂</span>
                 <span style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">Select or Drop Signal File</span>
             </div>
             """,
@@ -832,7 +842,7 @@ with col_ingest:
             st.markdown("</div>", unsafe_allow_html=True)
 
         # 4. Process Signal Action Button
-        process_btn = st.button("⚡ Process Signal", type="primary", use_container_width=True)
+        process_btn = st.button("Process Signal", type="primary", use_container_width=True)
 
 
 # ── EXECUTION & STATE HANDLING ───────────────────────────────
@@ -879,7 +889,7 @@ with col_canvas:
         st.markdown('<div class="card-main-title">Deep Signal Characteristics</div>', unsafe_allow_html=True)
 
         tab_spectral, tab_constellation, tab_waveform, tab_protocol = st.tabs([
-            "📊 Spectral Analysis", "🔵 Constellation", "〰️ Waveform", "🔐 Protocol & Bits"
+            "Spectral Analysis", "Constellation", "Waveform", "Protocol & Bits"
         ])
 
         # TAB 1: SPECTRAL
@@ -1055,7 +1065,7 @@ with st.container(border=True):
 # INTELLIGENCE EVIDENCE & EXPANDER (BOUNDED CARD)
 # ─────────────────────────────────────────────────────────────
 with st.container(border=True):
-    with st.expander("🔍 Intelligence Evidence & Mathematical Convergence", expanded=False):
+    with st.expander("Intelligence Evidence & Mathematical Convergence", expanded=False):
         ev1, ev2, ev3 = st.columns(3)
 
         with ev1:
@@ -1138,7 +1148,7 @@ with st.container(border=True):
     exp_c1, exp_c2, exp_c3 = st.columns([1, 1, 1.5])
     with exp_c1:
         st.download_button(
-            label="📥 Download .sigmf-meta",
+            label="Download .sigmf-meta",
             data=sigmf_json,
             file_name=f"{active_fname}.sigmf-meta",
             mime="application/json",
@@ -1146,7 +1156,7 @@ with st.container(border=True):
         )
     with exp_c2:
         st.download_button(
-            label="📥 Download Full JSON Telemetry",
+            label="Download Full JSON Telemetry",
             data=full_json,
             file_name=f"{active_fname}_telemetry.json",
             mime="application/json",
