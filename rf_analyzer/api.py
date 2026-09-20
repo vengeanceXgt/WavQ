@@ -15,16 +15,17 @@ def health():
 
 @app.post("/analyze")
 async def analyze_file(file: UploadFile = File(...)):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".iq") as tmp:
+    ext = os.path.splitext(file.filename)[1] or ".iq"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
         content = await file.read()
         tmp.write(content)
         tmp_path = tmp.name
-        
+
     try:
         result = analyze_signal(tmp_path)
     finally:
         os.remove(tmp_path)
-        
+
     return {
         "analysis_id": file.filename,
         "status": result["status"],

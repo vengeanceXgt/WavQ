@@ -15,9 +15,19 @@ class IngestResult:
 
 def _guess_raw_iq_dtype(raw_bytes):
     """Heuristic: try cf32 first (float exponent histogram is distinctive),
-    fall back to 16-bit interleaved ints if the byte count doesn't divide evenly."""
+    fall back to 16-bit interleaved ints if the byte count doesn't divide evenly
+    or if float interpretation produces infs/nans/huge values."""
     n = len(raw_bytes)
     if n % 8 == 0:
+        # Check if it looks like float32
+        floats = np.frombuffer(raw_bytes[:min(8000, n)], dtype=np.float32)
+        if not np.all(np.isfinite(floats)):
+            return "ci16_le"
+
+        abs_val = np.abs(floats[floats != 0])
+        if len(abs_val) > 0 and (np.max(abs_val) > 1e10 or np.min(abs_val) < 1e-30):
+            return "ci16_le"
+
         return "cf32_le"
     if n % 4 == 0:
         return "ci16_le"

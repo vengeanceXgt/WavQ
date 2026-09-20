@@ -41,7 +41,7 @@ def viterbi_decode(llr, g1=G1, g2=G2, k=CONSTRAINT_LEN):
     for sym in range(n_symbols):
         rx1, rx2 = llr[2 * sym], llr[2 * sym + 1]
         new_metric = np.full(n_states, INF)
-        new_paths = [None] * n_states
+        new_paths = [[] for _ in range(n_states)]
         for state in range(n_states):
             if path_metric[state] >= INF:
                 continue

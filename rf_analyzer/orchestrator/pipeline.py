@@ -20,11 +20,33 @@ from rf_analyzer.fec.identify import identify_and_decode
 from rf_analyzer.correlate.frames import find_repeating_frame_length, find_header_payload_boundary
 
 def analyze_signal(file_path, overrides=None):
+    import math
+    import numpy as np
+    def clean_nan(d):
+        import math
+        import numpy as np
+        if isinstance(d, dict):
+            return {k: clean_nan(v) for k, v in d.items()}
+        elif isinstance(d, (list, tuple)):
+            return [clean_nan(v) for v in d]
+        elif isinstance(d, (float, np.floating)):
+            if math.isnan(d) or math.isinf(d):
+                return None
+            return float(d)
+        elif isinstance(d, (int, np.integer)):
+            return int(d)
+        elif isinstance(d, np.ndarray):
+            if np.iscomplexobj(d):
+                return 'complex_array'
+            return clean_nan(d.tolist())
+        elif isinstance(d, (complex, np.complexfloating)):
+            return 'complex_scalar'
+        return d
     """
     Executes the full pipeline and returns the stable MVP schema.
     """
     overrides = overrides or {}
-    
+
     result = {
         "status": "failed",
         "input": {"file_path": file_path},
@@ -37,28 +59,28 @@ def analyze_signal(file_path, overrides=None):
         "evidence": [],
         "limitations": []
     }
-    
+
     try:
         # 1. Ingest
         try:
             ingest = load_file(file_path, assumed_sample_rate=overrides.get("sample_rate"))
             iq, clipped = normalize(ingest.iq)
-            
+
             # Prevent hangs on massive files by truncating to a reasonable analysis window
             MAX_SAMPLES = 10_000
             if len(iq) > MAX_SAMPLES:
                 iq = iq[:MAX_SAMPLES]
-                
+
             sample_rate = overrides.get("sample_rate", ingest.sample_rate) or 1.0
-            
+
             result["input"]["sample_rate"] = sample_rate
             result["input"]["samples"] = len(iq)
             result["input"]["duration_sec"] = len(iq) / sample_rate
             result["status"] = "partial"
         except Exception as e:
             result["limitations"].append(f"Ingest failed: {str(e)}")
-            return result
-            
+            return clean_nan(result)
+
         # 2. Spectral Analysis
         iq_bb = iq
         snr_db = None
@@ -68,36 +90,36 @@ def analyze_signal(file_path, overrides=None):
             cfo = overrides.get("cfo_hz", estimate_cfo_nonlinear(iq, sample_rate, power=4))
             iq_bb = mix_to_baseband(iq, sample_rate, cfo)
             freq_res = resolve_frequencies(cfo, sigmf_metadata=ingest.metadata)
-            
+
             if band:
                 result["signal"]["occupied_bandwidth_hz"] = band["bandwidth"]
                 snr_res = estimate_snr_spectral(iq_bb, sample_rate, occupied_band=(band["f_lo"], band["f_hi"]))
             else:
                 snr_res = estimate_snr_spectral(iq_bb, sample_rate)
-                
+
             if snr_res.valid:
                 snr_db = snr_res.snr_db
                 result["signal"]["snr_db"] = snr_db
-                
-            result["signal"]["center_frequency_hz"] = freq_res.get("rf_frequency_hz")
+
+            result["signal"]["center_frequency_hz"] = freq_res.absolute_rf_hz
             result["synchronization"]["cfo_hz"] = cfo
         except Exception as e:
             result["limitations"].append(f"Spectral analysis partial: {str(e)}")
-            
+
         # 3. Timing & Matched Filter
         sps = None
         try:
             sr_est = overrides.get("symbol_rate")
             if not sr_est:
                 sr_est = estimate_symbol_rate(iq_bb, sample_rate)
-                
+
             if sr_est:
                 sps = int(round(sr_est["samples_per_symbol"]))
                 result["synchronization"]["symbol_rate_sps"] = sr_est["symbol_rate"]
-                
+
             if overrides.get("sps"):
                 sps = int(overrides["sps"])
-                
+
             if sps:
                 continuous = apply_rx_matched_filter(iq_bb, sps=sps)
                 symbols = gardner_timing_recovery(continuous, sps=sps)
@@ -112,7 +134,7 @@ def analyze_signal(file_path, overrides=None):
             result["limitations"].append(f"Timing recovery failed: {str(e)}")
             continuous = iq_bb
             symbols = iq_bb
-            
+
         # 4. Modulation Analysis
         amc_res = None
         try:
@@ -122,7 +144,7 @@ def analyze_signal(file_path, overrides=None):
         except Exception as e:
             scheme = "unsupported"
             result["limitations"].append(f"AMC failed: {str(e)}")
-            
+
         # 5. Demodulation
         try:
             if scheme in ["bpsk", "qpsk", "16qam"]:
@@ -131,10 +153,10 @@ def analyze_signal(file_path, overrides=None):
                     result["synchronization"]["carrier_status"] = "costas_locked"
                 else:
                     locked = symbols
-                    
+
                 llr = symbols_to_llr(locked, scheme)
                 hard_bits = llr_to_hard_bits(llr)
-                
+
                 result["demodulation"] = {
                     "status": "success",
                     "bit_count": len(hard_bits)
@@ -144,9 +166,9 @@ def analyze_signal(file_path, overrides=None):
         except Exception as e:
             result["demodulation"]["status"] = "failed"
             result["limitations"].append(f"Demodulation failed: {str(e)}")
-            result["status"] = "complete" # Returning what we have
-            return result
-            
+            result["status"] = "partial" # Returning what we have
+            return clean_nan(result)
+
         # 6. Interleaving & FEC
         try:
             interleave_result = detect_block_interleaver_width(hard_bits)
@@ -154,12 +176,13 @@ def analyze_signal(file_path, overrides=None):
                 deinterleaved = deinterleave_block(hard_bits, interleave_result["width"], len(hard_bits)//interleave_result["width"])
             else:
                 deinterleaved = hard_bits
-                
+
             fec_result = identify_and_decode(llr)
-            if fec_result and fec_result.get("scheme"):
+            fec_type = fec_result.get("fec_type") if fec_result else None
+            if fec_type and fec_type != "unknown":
                 result["fec"] = {
                     "status": "identified",
-                    "scheme": fec_result["scheme"]
+                    "scheme": fec_type
                 }
                 final_bits = fec_result.get("decoded_bits", deinterleaved)
             else:
@@ -168,8 +191,8 @@ def analyze_signal(file_path, overrides=None):
         except Exception as e:
             result["fec"]["status"] = "failed"
             final_bits = hard_bits
-            result["limitations"].append(f"FEC analysis failed: {str(e)}")
-            
+            result["limitations"].append(f"FEC analysis failed: {str(e)}\n{traceback.format_exc()}")
+
         # 7. Frame Analysis
         try:
             frame_info = find_repeating_frame_length(final_bits)
@@ -185,13 +208,37 @@ def analyze_signal(file_path, overrides=None):
         except Exception as e:
             result["frame"]["status"] = "failed"
             result["limitations"].append(f"Frame analysis failed: {str(e)}")
-            
-        result["status"] = "complete"
-        
+
+        if any(s == "failed" for s in [result["demodulation"]["status"], result["frame"]["status"], result["fec"]["status"]]):
+            result["status"] = "partial"
+        else:
+            result["status"] = "complete"
+
     except Exception as e:
         result["limitations"].append(f"Unexpected pipeline exception: {str(e)}\n{traceback.format_exc()}")
-        
-    return result
+
+    def clean_nan(d):
+        import math
+        import numpy as np
+        if isinstance(d, dict):
+            return {k: clean_nan(v) for k, v in d.items()}
+        elif isinstance(d, (list, tuple)):
+            return [clean_nan(v) for v in d]
+        elif isinstance(d, (float, np.floating)):
+            if math.isnan(d) or math.isinf(d):
+                return None
+            return float(d)
+        elif isinstance(d, (int, np.integer)):
+            return int(d)
+        elif isinstance(d, np.ndarray):
+            if np.iscomplexobj(d):
+                return 'complex_array'
+            return clean_nan(d.tolist())
+        elif isinstance(d, (complex, np.complexfloating)):
+            return 'complex_scalar'
+        return d
+
+    return clean_nan(result)
 
 def run_pipeline(*args, **kwargs):
     # Backwards compatibility stub for old tests
@@ -203,27 +250,27 @@ def run_pipeline_on_iq(iq_complex, sample_rate=1.0, overrides=None):
     # For MVP tests, we can just save it to a tmp file and call analyze_signal
     import tempfile, os
     from rf_analyzer.orchestrator.pipeline import analyze_signal
-    
+
     with tempfile.NamedTemporaryFile(delete=False, suffix=".iq") as tmp:
         iq_complex.astype(np.complex64).tofile(tmp.name)
         tmp_path = tmp.name
-        
+
     try:
         res = analyze_signal(tmp_path, overrides)
     finally:
         os.remove(tmp_path)
-    
+
     # Pack into StageResult array so old tests don't break
     class StageResult:
         def __init__(self, name, ok, data=None, confidence=None, error=None):
             self.name, self.ok, self.data, self.confidence, self.error = name, ok, data, confidence, error
-            
+
     stages = []
     if res["status"] in ["complete", "partial"]:
         stages.append(StageResult("ingest", True, res["input"]))
         stages.append(StageResult("spectral", True, res["signal"]))
         stages.append(StageResult("symbol_rate", True, res["synchronization"]))
         stages.append(StageResult("amc", True, res["modulation"]))
-        
+
     return stages
 
