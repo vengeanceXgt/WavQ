@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NTROv5 – Premium Signal Intelligence Workstation</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <!-- Anime.js -->
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-5.22.0.min.js"></script>
+</head>
+<body>
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="brand">NTROv5</div>
+    <div class="spacer"></div>
+    <div class="status" id="status">Ready</div>
+  </header>
+
+  <!-- Hero / Drop Zone -->
+  <section class="hero">
+    <h1>SIGNAL INTELLIGENCE</h1>
+    <p>Transform raw .IQ and .WAV recordings into structured signal intelligence.</p>
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-content">
+        <div class="icon">&#x2193;</div>
+        <div class="text">DROP SIGNAL</div>
+        <div class="subtext">.IQ / .WAV</div>
+      </div>
+      <input type="file" id="fileInput" accept=".iq,.wav,.dat,.bin,.sigmf-data" hidden />
+    </div>
+  </section>
+
+  <!-- Workspace (hidden until file is loaded) -->
+  <section class="workspace" id="workspace" style="display:none;">
+    <nav class="command-bar">
+      <input type="text" placeholder="Press Ctrl+K for commands" readonly />
+    </nav>
+    <div class="panels" id="panels">
+      <!-- Panels will be injected by main.js -->
+    </div>
+  </section>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "ntrov5-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "animejs": "^3.2.2",
+    "plotly.js": "^5.22.0"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}
