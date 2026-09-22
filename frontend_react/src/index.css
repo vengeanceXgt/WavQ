@@ -1,80 +1,125 @@
 /* ═══════════════════════════════════════════════════════════════
-   NTROv5 — PRECISION SIGNAL INTELLIGENCE DESIGN SYSTEM
-   Aerospace / Defense-Grade RF Electronic Warfare & Telemetry Station
+   NTROv5 — AEROSIGNAL TACTICAL INTELLIGENCE CONSOLE
+   Precision Sovereign Defense & Signal Intelligence Design System
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Surface palette — deep obsidian & stealth slate */
-  --surface-0: #06080c;
-  --surface-1: #0a0d14;
-  --surface-2: #0f1420;
-  --surface-3: #151c2c;
-  --surface-4: #1c263c;
-  --surface-elevated: #23304c;
+  /* ── Surface Palette — Slate-Tinted Sterile Operational Ground ── */
+  --surface-0: #ffffff;
+  --surface-1: #f8f9ff;
+  --surface-2: #eff4ff;
+  --surface-3: #e5eeff;
+  --surface-4: #dce9ff;
+  --surface-elevated: #ffffff;
 
-  /* Primary Neon Accent — Electric Cyan */
-  --accent: #00f0ff;
-  --accent-dim: rgba(0, 240, 255, 0.12);
-  --accent-glow: rgba(0, 240, 255, 0.28);
-  --accent-hover: #38f8ff;
-  --accent-border: rgba(0, 240, 255, 0.35);
+  --surface-base: #f8f9ff;
+  --surface-card: #ffffff;
+  --surface-low: #eff4ff;
+  --surface-mid: #e5eeff;
+  --surface-high: #dce9ff;
+  --surface-highest: #d3e4fe;
+  --surface-dim: #cbdbf5;
 
-  /* Secondary Precision Accents */
-  --signal-emerald: #00ff9d;
-  --signal-emerald-dim: rgba(0, 255, 157, 0.15);
-  --signal-amber: #ffb800;
-  --signal-amber-dim: rgba(255, 184, 0, 0.15);
-  --signal-rose: #ff3366;
-  --signal-purple: #9d4edd;
-  --signal-blue: #3a86ff;
+  /* ── Command Federal Navy Palette ── */
+  --primary: #002a54;
+  --primary-container: #134074;
+  --primary-hover: #0b2545;
+  --primary-fixed: #d5e3ff;
+  --on-primary: #ffffff;
+  --on-primary-container: #88ade8;
 
-  /* Text Hierarchy */
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  --text-accent: var(--accent);
-  --text-emerald: var(--signal-emerald);
+  --accent: #134074;
+  --accent-dim: rgba(19, 64, 116, 0.08);
+  --accent-glow: rgba(19, 64, 116, 0.16);
+  --accent-hover: #002a54;
+  --accent-border: rgba(19, 64, 116, 0.25);
 
-  /* Tactical Borders */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(0, 240, 255, 0.4);
-  --border-accent: rgba(0, 240, 255, 0.3);
+  /* ── Secondary Steel Teal Palette ── */
+  --secondary: #006972;
+  --secondary-container: #9ff0fb;
+  --secondary-fixed: #9ff0fb;
+  --secondary-fixed-dim: #82d3de;
+  --on-secondary: #ffffff;
+  --on-secondary-container: #066f79;
 
-  /* Shadows & Glows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.85);
-  --shadow-glow: 0 0 25px rgba(0, 240, 255, 0.25);
-  --shadow-emerald: 0 0 25px rgba(0, 255, 157, 0.25);
+  /* ── Tertiary Dark Pine / Security Palette ── */
+  --tertiary: #00302c;
+  --tertiary-container: #004844;
+  --tertiary-fixed: #acefe7;
+  --tertiary-fixed-dim: #90d3cb;
+  --on-tertiary: #ffffff;
+  --on-tertiary-container: #75b7b0;
 
-  /* Typography */
-  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* ── Tactical Status & Semantics ── */
+  --signal-emerald: #059669;
+  --signal-emerald-dim: rgba(5, 150, 105, 0.10);
+  --signal-amber: #d97706;
+  --signal-amber-dim: rgba(217, 119, 6, 0.10);
+  --signal-rose: #dc2626;
+  --signal-rose-dim: rgba(220, 38, 38, 0.10);
+  --signal-sky: #0284c7;
+  --signal-sky-dim: rgba(2, 132, 199, 0.10);
+
+  /* ── Tactical Scope Pod (Dark Telemetry Box) ── */
+  --scope-bg: #0b1622;
+  --scope-surface: #040b13;
+  --scope-border: #1e293b;
+  --scope-grid: rgba(56, 189, 248, 0.12);
+  --scope-trace-i: #38bdf8;
+  --scope-trace-q: #34d399;
+  --scope-cyan: #38bdf8;
+
+  /* ── Text Hierarchy ── */
+  --text-primary: #0b1c30;
+  --text-secondary: #43474f;
+  --text-tertiary: #737780;
+  --text-accent: var(--primary-container);
+  --text-sky: var(--signal-sky);
+  --text-white: #0b1c30;
+
+  /* ── Precision Structural Borders ── */
+  --border: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  --border-hover: #134074;
+  --border-accent: rgba(19, 64, 116, 0.35);
+
+  /* ── Elevation Shadows (Crisp Architectural Depth) ── */
+  --shadow-xs: 0 1px 2px rgba(11, 28, 48, 0.04);
+  --shadow-sm: 0 1px 3px rgba(11, 28, 48, 0.06), 0 1px 2px rgba(11, 28, 48, 0.03);
+  --shadow-md: 0 4px 10px rgba(11, 28, 48, 0.07), 0 2px 4px rgba(11, 28, 48, 0.03);
+  --shadow-lg: 0 10px 24px rgba(11, 28, 48, 0.09), 0 3px 6px rgba(11, 28, 48, 0.04);
+  --shadow-xl: 0 16px 36px rgba(11, 28, 48, 0.11);
+  --shadow-accent: 0 2px 8px rgba(19, 64, 116, 0.18);
+
+  /* ── Typography Stack ── */
+  --font-display: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'IBM Plex Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 
-  /* Spacing */
+  /* ── Spacing ── */
   --space-2xs: 2px;
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
   --space-2xl: 48px;
   --space-3xl: 64px;
 
-  /* Radii */
-  --radius-xs: 3px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  /* ── Radii (Micro-Radii Standard: 4px default, 2px inner) ── */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
 
-  /* Transitions */
+  /* ── Transitions ── */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 400ms;
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
 }
 
 /* ── RESET ── */
@@ -85,7 +130,7 @@
 }
 
 html {
-  font-size: 15px;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -93,14 +138,10 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background: var(--surface-0);
+  background: var(--surface-base);
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.55;
   overflow-x: hidden;
-  background-image: 
-    linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
-  background-size: 36px 36px;
 }
 
 #root {
@@ -116,57 +157,73 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   color: var(--text-primary);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 700;
 }
 
-h1 { font-size: 2.75rem; font-weight: 700; }
-h2 { font-size: 1.75rem; font-weight: 600; }
-h3 { font-size: 1.25rem; font-weight: 600; }
-h4 { font-size: 1rem; font-weight: 600; }
+h1 { font-size: 2.35rem; font-weight: 800; letter-spacing: -0.025em; }
+h2 { font-size: 1.65rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+h4 { font-size: 0.95rem; font-weight: 600; }
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
 
 code, .mono {
   font-family: var(--font-mono);
   font-size: 0.85rem;
 }
 
-/* ── GLASS & CARDS ── */
+/* ── BRAND LOGO & NAVIGATION ── */
+.brand-zone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.brand-zone:hover {
+  opacity: 0.85;
+}
+
+.brand-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+}
+
+.footer-logo-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+}
+
+/* ── PANELS & CARDS ── */
 .glass-panel {
-  background: rgba(15, 20, 32, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--surface-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
-  transition: border-color var(--duration-normal) var(--ease-out);
+  transition: border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
 }
 
 .glass-panel:hover {
-  border-color: rgba(0, 240, 255, 0.25);
+  border-color: var(--primary-container);
+  box-shadow: var(--shadow-md);
 }
 
 .tactical-border {
-  position: relative;
-}
-.tactical-border::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 12px;
-  height: 12px;
-  border-top: 2px solid var(--accent);
-  border-left: 2px solid var(--accent);
-}
-.tactical-border::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 12px;
-  height: 12px;
-  border-bottom: 2px solid var(--accent);
-  border-right: 2px solid var(--accent);
+  border-top: 2px solid var(--primary-container);
 }
 
 /* ── BUTTONS ── */
@@ -174,57 +231,75 @@ code, .mono {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  padding: 8px 16px;
+  gap: var(--space-xs);
+  padding: 6px 14px;
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  border: none;
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all var(--duration-normal) var(--ease-out);
+  transition: all var(--duration-fast) var(--ease-out);
   white-space: nowrap;
   text-decoration: none;
+  outline: none;
+  height: 32px;
 }
 
+.btn:focus-visible {
+  outline: 2px solid var(--primary-container);
+  outline-offset: 1px;
+}
+
+/* Primary — Federal Command Navy */
 .btn-primary {
-  background: linear-gradient(135deg, #00f0ff 0%, #00b4d8 100%);
-  color: #050810;
-  font-weight: 700;
-  box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+  background: var(--primary);
+  color: #ffffff;
+  border-color: #0b2545;
+  box-shadow: var(--shadow-xs);
 }
 .btn-primary:hover {
-  background: linear-gradient(135deg, #38f8ff 0%, #00c4e8 100%);
-  box-shadow: 0 0 24px rgba(0, 240, 255, 0.5);
-  transform: translateY(-1px);
+  background: var(--primary-container);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
 }
 .btn-primary:active {
-  transform: translateY(0);
+  background: #001c3b;
+}
+.btn-primary:disabled {
+  background: var(--surface-3);
+  border-color: var(--border);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
 }
 
-.btn-emerald {
-  background: linear-gradient(135deg, #00ff9d 0%, #00b368 100%);
-  color: #050810;
-  font-weight: 700;
-  box-shadow: 0 0 16px rgba(0, 255, 157, 0.3);
-}
-.btn-emerald:hover {
-  box-shadow: 0 0 24px rgba(0, 255, 157, 0.5);
-  transform: translateY(-1px);
-}
-
+/* Secondary / Outline Button */
 .btn-secondary {
-  background: rgba(21, 28, 44, 0.85);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  color: var(--primary-container);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xs);
 }
 .btn-secondary:hover {
-  background: rgba(28, 38, 60, 0.95);
-  border-color: var(--border-hover);
-  color: var(--accent);
+  background: var(--surface-2);
+  border-color: var(--primary-container);
+  color: var(--primary);
 }
 
+/* Emerald / Verification */
+.btn-emerald {
+  background: var(--secondary);
+  color: #ffffff;
+  border-color: #004f56;
+}
+.btn-emerald:hover {
+  background: #00565e;
+  color: #ffffff;
+}
+
+/* Ghost */
 .btn-ghost {
   background: transparent;
   color: var(--text-secondary);
@@ -232,139 +307,162 @@ code, .mono {
 }
 .btn-ghost:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--surface-2);
+  border-color: var(--border-subtle);
 }
 
 .btn-sm {
-  padding: 5px 10px;
-  font-size: 0.78rem;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  height: 26px;
 }
 
 .btn-lg {
-  padding: 12px 24px;
-  font-size: 1rem;
-  border-radius: var(--radius-md);
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  height: 38px;
 }
 
 /* ── STATUS BADGES ── */
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
+  gap: 4px;
+  padding: 2px 7px;
   border-radius: var(--radius-xs);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  line-height: 1.3;
 }
 
-.badge-cyan {
-  background: rgba(0, 240, 255, 0.12);
-  color: #00f0ff;
-  border: 1px solid rgba(0, 240, 255, 0.3);
+.badge-cyan,
+.badge-indigo {
+  background: var(--surface-2);
+  color: var(--primary-container);
+  border: 1px solid var(--surface-4);
 }
 
 .badge-emerald {
-  background: rgba(0, 255, 157, 0.12);
-  color: #00ff9d;
-  border: 1px solid rgba(0, 255, 157, 0.3);
+  background: rgba(5, 150, 105, 0.08);
+  color: var(--signal-emerald);
+  border: 1px solid rgba(5, 150, 105, 0.25);
 }
 
 .badge-amber {
-  background: rgba(255, 184, 0, 0.12);
-  color: #ffb800;
-  border: 1px solid rgba(255, 184, 0, 0.3);
+  background: rgba(217, 119, 6, 0.08);
+  color: var(--signal-amber);
+  border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
 .badge-red {
-  background: rgba(255, 51, 102, 0.12);
-  color: #ff3366;
-  border: 1px solid rgba(255, 51, 102, 0.3);
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--signal-rose);
+  border: 1px solid rgba(220, 38, 38, 0.25);
 }
 
 .badge-gray {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--surface-2);
   color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
+.badge-sky {
+  background: rgba(2, 132, 199, 0.08);
+  color: var(--signal-sky);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+}
+
+/* ── PULSE BEACON ── */
 .pulse-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   display: inline-block;
   background: currentColor;
-  box-shadow: 0 0 8px currentColor;
-  animation: pulse-beacon 1.8s infinite ease-in-out;
+  animation: pulse-beacon 2s infinite ease-in-out;
 }
 
 @keyframes pulse-beacon {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(0.8); }
+  50%       { opacity: 0.35; transform: scale(0.75); }
 }
 
-/* ── CODE & JSON DISPLAY ── */
+/* ── TERMINAL / CODE DISPLAY ── */
 .terminal-window {
-  background: #05070a;
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  border-radius: var(--radius-md);
+  background: #0b1622;
+  border: 1px solid #1e293b;
+  border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .terminal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 14px;
-  background: rgba(15, 20, 32, 0.9);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  padding: 7px 12px;
+  background: #040b13;
+  border-bottom: 1px solid #1e293b;
+  font-size: 0.70rem;
+  color: #88ade8;
 }
 
-.terminal-dots {
-  display: flex;
-  gap: 6px;
-}
-
-.terminal-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-}
-.dot-red { background: #ff5f56; }
-.dot-yellow { background: #ffbd2e; }
-.dot-green { background: #27c93f; }
+.terminal-dots { display: flex; gap: 5px; }
+.terminal-dot  { width: 8px; height: 8px; border-radius: 50%; }
+.dot-red    { background: #dc2626; }
+.dot-yellow { background: #d97706; }
+.dot-green  { background: #059669; }
 
 /* ── SCROLLBAR ── */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 3px;
+  background: rgba(11, 28, 48, 0.15);
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.3);
+  background: rgba(19, 64, 116, 0.35);
 }
 
-/* ── UTILITIES ── */
-.text-cyan { color: var(--accent); }
-.text-emerald { color: var(--signal-emerald); }
-.text-amber { color: var(--signal-amber); }
-.text-secondary { color: var(--text-secondary); }
-.font-mono { font-family: var(--font-mono); }
-.font-display { font-family: var(--font-display); }
+/* ── ANIMATION UTILITIES ── */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.hud-grid {
-  display: grid;
-  gap: var(--space-md);
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .5; }
+}
+
+/* ── UTILITY CLASSES ── */
+.text-cyan,
+.text-indigo  { color: var(--primary-container); }
+.text-sky     { color: var(--signal-sky); }
+.text-emerald { color: var(--signal-emerald); }
+.text-amber   { color: var(--signal-amber); }
+.text-rose    { color: var(--signal-rose); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary  { color: var(--text-tertiary); }
+.font-mono      { font-family: var(--font-mono); }
+.font-display   { font-family: var(--font-display); }
+.font-medium    { font-weight: 500; }
+.font-bold      { font-weight: 700; }
+
+.hud-grid { display: grid; gap: var(--space-md); }
+
+/* ── FORM ELEMENTS ── */
+input, select, textarea {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+}
+input::placeholder, textarea::placeholder {
+  color: var(--text-tertiary);
 }

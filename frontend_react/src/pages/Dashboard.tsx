@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Radio, Upload, FileAudio, Activity,
+  Upload, FileAudio, Activity,
   AlertCircle, ArrowRight, Layers, Play, RefreshCw, Terminal,
   HardDrive, Sliders, ChevronRight
 } from 'lucide-react';
@@ -199,12 +199,10 @@ export const Dashboard: React.FC = () => {
     <div className="dash-root">
       {/* Top HUD Header */}
       <header className="dash-top-bar">
-        <div className="brand-zone">
-          <div className="brand-glyph">
-            <Radio size={20} className="text-cyan" />
-          </div>
+        <div className="brand-zone" onClick={() => navigate('/')} title="Return to Landing Page">
+          <img src="/logo.png" alt="WavQ Logo" className="brand-logo-img" />
           <div className="brand-text">
-            <span className="brand-title font-display">NTROv5</span>
+            <span className="brand-title font-display">WavQ</span>
             <span className="brand-sub font-mono">TELEMETRY DASHBOARD</span>
           </div>
         </div>
