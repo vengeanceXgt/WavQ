@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  Radio, Upload, Waves, Cpu, BarChart3, Layers,
+  Upload, Waves, Cpu, BarChart3, Layers,
   Shield, FileText, ArrowLeft, Download,
   Copy, Check, RefreshCw, Zap,
   Terminal, CheckCircle2
@@ -234,8 +234,8 @@ export const Workspace: React.FC = () => {
           <button className="ws-back-btn" onClick={() => navigate('/dashboard')} title="Return to Dashboard">
             <ArrowLeft size={16} />
           </button>
-          <div className="brand-glyph">
-            <Radio size={18} className="text-cyan" />
+          <div className="brand-zone-compact" onClick={() => navigate('/')} title="Return to Landing Page" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img src="/logo.png" alt="WavQ Logo" className="brand-logo-img" />
           </div>
           <div className="ws-mission-meta">
             <span className="ws-mission-title font-display">
