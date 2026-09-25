@@ -24,6 +24,52 @@ docker run -d --name rf-analyzer -p 8501:8501 \
 
 See **04_DEPLOYMENT_PLAN.md** for the full offline/air-gapped packaging procedure, rollback steps, and health checks.
 
+## Production Deployment (Render & Docker)
+
+WavQ is configured as a single Docker Web Service serving both the React frontend and FastAPI backend.
+
+### 1. Local Development
+```bash
+# Backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m pytest tests/ -v
+uvicorn backend.app:app --reload --port 8000
+
+# Frontend (in separate terminal)
+cd frontend_react
+npm ci
+npm run dev
+```
+
+### 2. Docker Build & Run
+```bash
+# Build production multi-stage container
+docker build -t wavq .
+
+# Run locally
+docker run --rm -p 8000:8000 wavq
+```
+
+Once running:
+- **Application UI**: `http://localhost:8000/`
+- **Dashboard**: `http://localhost:8000/dashboard`
+- **Workspace**: `http://localhost:8000/workspace`
+- **Health Check**: `http://localhost:8000/api/health` -> `{"status": "ok"}`
+- **Sample Signals**: `http://localhost:8000/api/samples`
+
+### 3. Deploy to Render
+1. Create a new service on [Render](https://render.com): **New +** -> **Web Service**.
+2. Connect your GitHub repository (`WavQ`).
+3. Select Environment / Runtime: **Docker**.
+4. Leave **Build Command** and **Start Command** empty (Render automatically uses the `Dockerfile`).
+5. Render automatically injects the `$PORT` environment variable.
+6. Deployment URL pattern: `https://<your-app-name>.onrender.com`
+
+*Note: Uploaded files and temporary analysis results under `./uploads` are ephemeral in cloud containers unless persistent disk storage is attached.*
+
+
 ## What's included
 
 - `rf_analyzer/` — the full pipeline: ingest, spectral estimation, receive matched filtering + timing/carrier synchronization, modulation classification, demodulation, interleaver detection, FEC decoding, bitstream correlation, orchestration, GUI, and export.

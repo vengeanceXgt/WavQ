@@ -74,7 +74,7 @@ export interface SignalAnalysisResult {
 
 export const api = axios.create({
   baseURL: '/api',
-  timeout: 30000,
+  timeout: 300000,
 });
 
 export const checkHealth = async (): Promise<boolean> => {

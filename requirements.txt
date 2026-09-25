@@ -6,3 +6,6 @@ python-multipart>=0.0.9
 streamlit>=1.24.0
 plotly>=5.22.0
 pydantic>=2.0.0
+reedsolo>=1.7.0
+h5py
+

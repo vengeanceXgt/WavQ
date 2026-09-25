@@ -8,8 +8,8 @@ import json
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from .schemas import SignalResponse
-
 
 # Import the existing analysis pipeline
 from rf_analyzer.orchestrator.pipeline import analyze_signal
@@ -29,12 +29,17 @@ app.add_middleware(
 UPLOAD_ROOT = Path("./uploads")
 UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
 
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok"}
+
 @app.post("/api/signals", response_model=SignalResponse)
 async def upload_signal(file: UploadFile = File(...)):
-    # Validate extension
+    # Validate extension safely
+    filename = file.filename or "uploaded.iq"
     allowed_ext = {".iq", ".wav", ".dat", ".bin", ".sigmf-data"}
-    ext = Path(file.filename).suffix.lower()
-    if ext not in allowed_ext:
+    ext = Path(filename).suffix.lower()
+    if not ext or ext not in allowed_ext:
         raise HTTPException(status_code=400, detail="Unsupported file type")
 
     # Create a unique temporary directory for this upload
@@ -58,9 +63,10 @@ async def upload_signal(file: UploadFile = File(...)):
 
     # Build response model
     response = SignalResponse(id=signal_id, status=result.get("status", "unknown"), result=result)
-    # Store result JSON for later retrieval
+    # Store result JSON for later retrieval using Pydantic v2 model_dump_json()
     result_path = dest_dir / "result.json"
-    result_path.write_text(response.json())
+    result_json = response.model_dump_json() if hasattr(response, "model_dump_json") else response.json()
+    result_path.write_text(result_json)
 
     return response
 
@@ -100,7 +106,8 @@ def analyze_sample(sample_name: str):
         
     response = SignalResponse(id=signal_id, status=result.get("status", "unknown"), result=result)
     result_path = dest_dir / "result.json"
-    result_path.write_text(response.json())
+    result_json = response.model_dump_json() if hasattr(response, "model_dump_json") else response.json()
+    result_path.write_text(result_json)
     return response
 
 @app.get("/api/signals/{signal_id}")
@@ -110,10 +117,35 @@ def get_signal_result(signal_id: str):
         raise HTTPException(status_code=404, detail="Result not found")
     return JSONResponse(content=json.loads(result_path.read_text()))
 
-# Serve static frontend files (development mode)
-from fastapi.staticfiles import StaticFiles
+# Serve static frontend files (React production build in frontend_react/dist)
+FRONTEND_DIST = Path("frontend_react/dist").resolve()
 
-@app.get("/api/health")
-async def health_check():
-    return {"status": "ok"}
-app.mount("/", StaticFiles(directory="./frontend", html=True), name="frontend")
+if FRONTEND_DIST.exists() and (FRONTEND_DIST / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="static_assets")
+
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    # Never intercept API routes
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API endpoint not found")
+
+    if not FRONTEND_DIST.exists():
+        raise HTTPException(status_code=404, detail="Frontend dist directory not found")
+
+    # Sanitize requested path to prevent path traversal
+    requested_path = (FRONTEND_DIST / full_path).resolve()
+    try:
+        requested_path.relative_to(FRONTEND_DIST)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid path")
+
+    # If file exists and is a file, serve it directly
+    if requested_path.is_file():
+        return FileResponse(requested_path)
+
+    # Fallback to index.html for client-side React routes (e.g. /dashboard, /workspace)
+    index_path = FRONTEND_DIST / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+
+    raise HTTPException(status_code=404, detail="Frontend index.html not found")
